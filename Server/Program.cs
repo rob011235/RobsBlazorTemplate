@@ -85,6 +85,14 @@ app.MapRazorComponents<App>()
 app.MapAdditionalIdentityEndpoints();
 #endregion
 
+#region Apply Migrations
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
+}
+#endregion
+
 #region Add default admin user
 //User Secrets needs the admin user id and password 
 //In the following format
@@ -121,5 +129,6 @@ using (var scope = app.Services.CreateScope())
     }
 }
 #endregion
+
 
 app.Run();
