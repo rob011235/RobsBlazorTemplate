@@ -1,0 +1,36 @@
+﻿@page "/email"
+@rendermode InteractiveServer
+
+@inject IEmailService emailService
+@attribute [Authorize(Roles="Admin")]
+<h3>EmailPage</h3>
+
+<div class="mb-3">
+    <label for="to">To:</label>
+    <InputTextArea class="form-control" id="to" @bind-Value="to" />
+</div>
+<div class ="mb-3">
+    <label for="subject">Subject:</label>
+    <InputText class="form-control" id="subject" @bind-Value="subject" />
+</div>
+<div class="mb-3">
+    <label for="body">Body:</label>
+    <InputTextArea class="form-control" id="body" @bind-Value="body" />
+</div> 
+<button type="button" class="btn btn-primary" @onclick="SubmitAsync">Send</button>
+
+@code {
+    string to = "";
+    string subject = "";
+    string body = "";
+
+    private async void SubmitAsync()
+    {
+        var mailData = new MailData();
+        mailData.To = to.Split(';').ToList<string>();
+        mailData.Subject = subject;
+        mailData.Body = body;
+        var result = await emailService.SendEmailAsync(mailData);
+    }
+}
+
