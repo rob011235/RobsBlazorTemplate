@@ -19,9 +19,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Client\Client.csproj" />
     <ProjectReference Include="..\SharedComponents\SharedComponents.csproj" />
     <ProjectReference Include="..\Shared\SharedClasses.csproj" />
+    <ProjectReference Include="..\WebClient\WebClient.csproj" />
     <PackageReference Include="MailKit" Version="4.8.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.10" />

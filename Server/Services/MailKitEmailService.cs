@@ -87,7 +87,7 @@ namespace Server.Services
                 return true;
 
             }
-            catch (Exception exc)
+            catch (Exception)
             {
                 return false;
             }

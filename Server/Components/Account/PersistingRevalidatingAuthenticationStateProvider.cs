@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using Client;
+using WebClient;
 using Server.Data;
 
 namespace Server.Components.Account;

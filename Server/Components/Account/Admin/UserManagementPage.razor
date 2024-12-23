@@ -13,7 +13,7 @@
 <h3>Administration</h3>
 <AuthorizeView>
     <Authorized>
-        @if (CurrentUser.IsInRole(ADMINISTRATION_ROLE))
+        @if (CurrentUser != null && CurrentUser.IsInRole(ADMINISTRATION_ROLE))
         {
             <table class="table">
                 <thead>
@@ -81,14 +81,17 @@
                                 <input class="form-control" type="password"
                                        placeholder="Password"
                                        @bind="objUser.PasswordHash" />
-                                @foreach (var roleName in roleNames)
+                                @if(roleNames != null)
                                 {
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" checked="@(rolesUserIsIn?.Contains(roleName))" id="flexCheckDefault" @onchange="eventArgs => { CheckboxClicked(roleName, eventArgs?.Value); }">
-                                        <label class="form-check-label" for="flexCheckDefault">
-                                            @roleName
-                                        </label>
-                                    </div>
+                                    @foreach (var roleName in roleNames)
+                                    {
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" checked="@(rolesUserIsIn?.Contains(roleName))" id="flexCheckDefault" @onchange="eventArgs => { CheckboxClicked(roleName, eventArgs?.Value!); }">
+                                            <label class="form-check-label" for="flexCheckDefault">
+                                                @roleName
+                                            </label>
+                                        </div>
+                                    }
                                 }
                                 <br /><br />
                                 <!-- Button to save the user -->
@@ -132,14 +135,14 @@
     List<string>? roleNames;
     IList<string>? rolesUserIsIn;
     // To hold any possible errors
-    string strError = "";
+    string? strError = "";
     // To enable showing the Popup
     bool ShowPopup = false;
 
     [CascadingParameter]
-    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    private Task<AuthenticationState>? authenticationStateTask { get; set; }
     string ADMINISTRATION_ROLE = "Admin";
-    System.Security.Claims.ClaimsPrincipal CurrentUser;
+    System.Security.Claims.ClaimsPrincipal? CurrentUser;
 
     protected override async Task OnInitializedAsync()
     {
@@ -147,9 +150,15 @@
         roleNames = new List<string>();
         foreach(var role in roles)
         {
-            roleNames.Add(role.Name);
+            if (role.Name != null)
+            {
+                roleNames.Add(role.Name);
+            }
         }
-        CurrentUser = (await authenticationStateTask).User;
+        if (authenticationStateTask != null)
+        {
+            CurrentUser = (await authenticationStateTask).User;
+        }
         GetUsers();
     }
 
@@ -241,11 +250,19 @@
     {
         try
         {
+            if (objUser == null)
+            {
+                return;
+            }
             // Is this an existing user?
             if (objUser.Id != "")
             {
                 // Get the user
                 var existingUser = await _UserManager.FindByIdAsync(objUser.Id);
+                if (existingUser == null)
+                {
+                    return;
+                }
                 // Update Email
                 existingUser.Email = objUser.Email;
                 // Update the user
@@ -256,27 +273,31 @@
                 {
                     var resetToken =
                         await _UserManager.GeneratePasswordResetTokenAsync(existingUser);
-                    var passworduser =
-                        await _UserManager.ResetPasswordAsync(
-                            existingUser,
-                            resetToken,
-                            objUser.PasswordHash);
-                    if (!passworduser.Succeeded)
+                    if (objUser.PasswordHash != null)
                     {
-                        if (passworduser.Errors.FirstOrDefault() != null)
+                        var passworduser =
+                            await _UserManager.ResetPasswordAsync(
+                                existingUser,
+                                resetToken,
+                                objUser.PasswordHash);
+
+                        if (!passworduser.Succeeded)
                         {
-                            strError =
-                                passworduser
-                                .Errors
-                                .FirstOrDefault()
-                                .Description;
+                            if (passworduser.Errors.FirstOrDefault() != null)
+                            {
+                                strError =
+                                    passworduser?
+                                    .Errors?
+                                    .FirstOrDefault()?
+                                    .Description;
+                            }
+                            else
+                            {
+                                strError = "Pasword error";
+                            }
+                            // Keep the popup opened
+                            return;
                         }
-                        else
-                        {
-                            strError = "Pasword error";
-                        }
-                        // Keep the popup opened
-                        return;
                     }
                 }
                 // Handle Roles
@@ -312,34 +333,40 @@
                             UserName = objUser.UserName,
                             Email = objUser.Email
                         };
-                var CreateResult =
-                    await _UserManager
-                    .CreateAsync(NewUser, objUser.PasswordHash);
-                if (!CreateResult.Succeeded)
+                if (objUser.PasswordHash != null)
                 {
-                    if (CreateResult
-                        .Errors
-                        .FirstOrDefault() != null)
+                    var CreateResult =
+                        await _UserManager
+                        .CreateAsync(NewUser, objUser.PasswordHash);
+                    if (!CreateResult.Succeeded)
                     {
-                        strError =
-                            CreateResult
+                        if (CreateResult
                             .Errors
-                            .FirstOrDefault()
-                            .Description;
+                            .FirstOrDefault() != null)
+                        {
+                            strError =
+                                CreateResult?
+                                .Errors?
+                                .FirstOrDefault()?
+                                .Description;
+                        }
+                        else
+                        {
+                            strError = "Create error";
+                        }
+                        // Keep the popup opened
+                        return;
                     }
                     else
                     {
-                        strError = "Create error";
-                    }
-                    // Keep the popup opened
-                    return;
-                }
-                else
-                {
-                    // Handle Roles
-                    foreach (var roleName in rolesUserIsIn)
-                    {
-                        await _UserManager.AddToRoleAsync(NewUser, roleName);
+                        // Handle Roles
+                        if (rolesUserIsIn != null)
+                        {
+                            foreach (var roleName in rolesUserIsIn)
+                            {
+                                await _UserManager.AddToRoleAsync(NewUser, roleName);
+                            }
+                        }
                     }
                 }
             }
