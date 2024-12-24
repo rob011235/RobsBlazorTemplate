@@ -10,6 +10,8 @@
 <h3>Manage Blogs</h3>
 <p>A list of blogs on this site. You can add, edit, update and delete blogs here.</p>
 
+<Toasts class="p-3" Messages="messages" Placement="ToastsPlacement.TopRight" />
+
 
 @if (Blogs == null)
 {
@@ -17,22 +19,43 @@
 }
 else
 {
-    <span class="error">@ErrorDetails</span>
-
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var blog in Blogs)
+            {
+                <tr>
+                    <td>@blog.Title</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
 
-<style>
-    .error {
-        color: red;
-    }
-</style>
 @code 
 {
-    public string ErrorDetails = "";
     public static List<Blog>? Blogs { get; set; }
 
     protected async override Task OnInitializedAsync()
     {
         Blogs = await ds.GetBlogsAsync();
     }
+
+    List<ToastMessage> messages = new List<ToastMessage>();
+
+    //private void ShowMessage(ToastType toastType) => messages.Add(CreateToastMessage(toastType));
+
+    private ToastMessage CreateToastMessage(ToastType toastType)
+    => new ToastMessage
+        {
+            Type = toastType,
+            Title = "Blazor Bootstrap",
+            HelpText = $"{DateTime.Now}",
+            Message = $"Hello, world! This is a toast message. DateTime: {DateTime.Now}",
+        };
+
 }

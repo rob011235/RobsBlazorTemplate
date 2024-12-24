@@ -8,4 +8,8 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticationStateProvider>();
 
+#region Register Component Libraries
+builder.Services.AddBlazorBootstrap();
+#endregion
+
 await builder.Build().RunAsync();

@@ -60,7 +60,8 @@ builder.Services.AddTransient<IEmailService, MailKitEmailService>();
 builder.Services.AddTransient<IEmailSender<ApplicationUser>, EmailSender>();
 #endregion
 
-#region Configure Syncfusion
+#region Configure Component Libraries
+builder.Services.AddBlazorBootstrap();
 #endregion
 var app = builder.Build();
 
