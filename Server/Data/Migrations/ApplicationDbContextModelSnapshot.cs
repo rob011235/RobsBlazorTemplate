@@ -218,6 +218,9 @@ namespace Server.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Route")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Title")
                         .HasMaxLength(80)
                         .HasColumnType("TEXT");
@@ -233,6 +236,9 @@ namespace Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("BlogId")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateOnly>("Date")
                         .HasColumnType("TEXT");
 
@@ -244,6 +250,8 @@ namespace Server.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BlogId");
 
                     b.ToTable("Posts");
                 });
@@ -297,6 +305,20 @@ namespace Server.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SharedClasses.Models.BlogModels.Post", b =>
+                {
+                    b.HasOne("SharedClasses.Models.BlogModels.Blog", "Blog")
+                        .WithMany("Posts")
+                        .HasForeignKey("BlogId");
+
+                    b.Navigation("Blog");
+                });
+
+            modelBuilder.Entity("SharedClasses.Models.BlogModels.Blog", b =>
+                {
+                    b.Navigation("Posts");
                 });
 #pragma warning restore 612, 618
         }

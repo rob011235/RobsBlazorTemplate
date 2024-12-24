@@ -39,6 +39,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddTransient<ManageBlogsPageDataService>();
+builder.Services.AddTransient<ManageBlogPageDataService>();
 #endregion
 
 #region Configure Identity

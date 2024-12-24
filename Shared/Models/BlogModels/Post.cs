@@ -25,5 +25,15 @@ namespace SharedClasses.Models.BlogModels
         /// Date of blog post
         /// </summary>
         public DateOnly Date { get; set; }
+
+        /// <summary>
+        /// Id of blog this post belongs to
+        /// </summary>
+        public Guid? BlogId { get; set; }
+
+        /// <summary>
+        /// Blog this post belongs to
+        /// </summary>
+        public Blog? Blog { get; set; }
     }
 }

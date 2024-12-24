@@ -11,6 +11,16 @@ namespace Server.Services.DataServices
             return await context.Blogs.ToListAsync();
         }
 
+        public async Task<Blog?> GetBlogAsync(Guid id)
+        {
+            return await context.Blogs.Where(b=>b.Id == id).FirstOrDefaultAsync();
+        }
+
+        public async Task<Blog?> GetBlogFromTitleAsync(string title)
+        {
+            return await context.Blogs.Where(b => b.Title == title).FirstOrDefaultAsync();
+        }
+
         public async Task<Blog> AddAsync(Blog blog)
         {
             blog.Id = Guid.NewGuid();

@@ -19,25 +19,42 @@
 }
 else
 {
+    <button class="btn btn-primary" @onclick="OpenAddModalAsync">
+        <span class="oi oi-plus" aria-hidden="true"></span>
+        Add blog
+    </button>
     <table class="table">
         <thead>
             <tr>
                 <th>Title</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var blog in Blogs)
             {
                 <tr>
-                    <td>@blog.Title</td>
+                    <td><a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="ManageBlog/@blog.Route">@blog.Title</a></td>
+                    <td>
+                        <button class="btn btn-light" @onclick="() => OpenEditModalAsync(blog)">
+                            <Icon Name="IconName.Pencil"/>
+                        </button>
+                        <button class="btn btn-light" @onclick="() => OnDeleteAsync(blog)">
+                            <Icon Name="IconName.X"/>
+                        </button>
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
+
+    <Modal @ref="editModal" UseStaticBackdrop="true" CloseOnEscape="false"/>
 }
 
 @code 
 {
+    private Modal editModal = default!;
+
     public static List<Blog>? Blogs { get; set; }
 
     protected async override Task OnInitializedAsync()
@@ -47,15 +64,47 @@ else
 
     List<ToastMessage> messages = new List<ToastMessage>();
 
-    //private void ShowMessage(ToastType toastType) => messages.Add(CreateToastMessage(toastType));
+    private async void OpenAddModalAsync()
+    {
+        var parameters = new Dictionary<string, object>();
+        parameters.Add("OnclickCallback",new Action<Blog>(AddCompleteAsync));
+        await editModal.ShowAsync<EditBlogPage>(title: "Add Blog",parameters: parameters);
+    }
 
-    private ToastMessage CreateToastMessage(ToastType toastType)
-    => new ToastMessage
+    public async void AddCompleteAsync(Blog? blog)
+    {
+        editModal?.HideAsync();
+        if(blog != null)
         {
-            Type = toastType,
-            Title = "Blazor Bootstrap",
-            HelpText = $"{DateTime.Now}",
-            Message = $"Hello, world! This is a toast message. DateTime: {DateTime.Now}",
-        };
+            var newBlog = await ds.AddAsync(blog);
+            Blogs?.Add(newBlog);
+            StateHasChanged();
+        }
+    }
 
+    private async void OpenEditModalAsync(Blog blog)
+    {
+        var parameters = new Dictionary<string, object>();
+        parameters.Add("Blog", blog);
+        parameters.Add("OnclickCallback", new Action<Blog>(EditCompleteAsync));
+        await editModal.ShowAsync<EditBlogPage>(title: "Edit Blog", parameters: parameters);
+    }
+
+    public async void EditCompleteAsync(Blog? blog)
+    {
+
+        editModal?.HideAsync();
+        if (blog != null)
+        {
+            await ds.UpdateAsync(blog);
+            StateHasChanged();
+        }
+
+    }
+
+    private async void OnDeleteAsync(Blog blog)
+    {
+        await ds.DeleteAsync(blog.Id);
+        Blogs?.Remove(blog);
+    }
 }

@@ -31,9 +31,11 @@ namespace Server.Services
                 mail.Sender = new MailboxAddress(mailData.DisplayName ?? _settings.DisplayName, mailData.From ?? _settings.From);
 
                 // Receiver
-                foreach (string mailAddress in mailData.To)
-                    mail.To.Add(MailboxAddress.Parse(mailAddress));
-
+                if (mailData.To != null)
+                {
+                    foreach (string mailAddress in mailData.To)
+                        mail.To.Add(MailboxAddress.Parse(mailAddress));
+                }
                 // Set Reply to if specified in mail data
                 if (!string.IsNullOrEmpty(mailData.ReplyTo))
                     mail.ReplyTo.Add(new MailboxAddress(mailData.ReplyToName, mailData.ReplyTo));

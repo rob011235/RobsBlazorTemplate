@@ -20,5 +20,15 @@ namespace SharedClasses.Models.BlogModels
         /// Description of the blog.
         /// </summary>
         public string? Description { get; set; }
+
+        /// <summary>
+        /// Navigation route you want for this blog (<domain>/<route>).
+        /// </summary>
+        public string? Route { get; set; }
+
+        /// <summary>
+        /// Posts associated with this blog
+        /// </summary>
+        public List<Post>? Posts { get; set; }
     }
 }
