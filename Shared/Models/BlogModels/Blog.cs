@@ -1,24 +1,24 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SharedClasses.Models.Blog
+namespace SharedClasses.Models.BlogModels
 {
     /// <summary>
-    /// A single blog entry
+    /// Class that represents a blog that has a collection of posts.
     /// </summary>
-    public class BlogEntry
+    public class Blog
     {
         /// <summary>
         /// Unique Id
         /// </summary>
         public Guid Id { get; set; }
         /// <summary>
-        /// Title for the blog entry. Max length 80.
+        /// Title for the blog. Keep to one line.
         /// </summary>
         [MaxLength(80)]
         public string? Title { get; set; }
         /// <summary>
-        /// Text for the blog entry. This will be rendered as html.
+        /// Description of the blog.
         /// </summary>
-        public string? Text { get; set; }
+        public string? Description { get; set; }
     }
 }

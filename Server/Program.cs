@@ -3,10 +3,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Server.Components;
 using Server.Components.Account;
+using Server.Components.Pages.BlogPages;
 using Server.Data;
 using Server.Services;
+using Server.Services.DataServices;
 using SharedClasses.Interfaces;
 using SharedClasses.Models;
+using Syncfusion.Blazor;
+using static Server.Components.Pages.BlogPages.ManageBlogs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +38,9 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+builder.Services.AddTransient<BlogEditPageDataService>();
+builder.Services.AddScoped<BlogGridCustomDataAdapter>();
 #endregion
 
 #region Configure Identity
@@ -55,6 +62,10 @@ builder.Services.AddTransient<IEmailService, MailKitEmailService>();
 builder.Services.AddTransient<IEmailSender<ApplicationUser>, EmailSender>();
 #endregion
 
+#region Configure Syncfusion
+builder.Services.AddSyncfusionBlazor();
+Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(builder.Configuration.GetSection("SyncfusionLicenseKey").Value);
+#endregion
 var app = builder.Build();
 
 #region Add HTTP request pipeline.

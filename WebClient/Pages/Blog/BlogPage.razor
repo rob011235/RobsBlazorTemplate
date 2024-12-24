@@ -1,0 +1,9 @@
+﻿@page "/blog/{name}"
+@rendermode InteractiveAuto
+
+<h3>@name Blog</h3>
+
+@code {
+    [Parameter]
+    public string? name{ get; set; }
+}
