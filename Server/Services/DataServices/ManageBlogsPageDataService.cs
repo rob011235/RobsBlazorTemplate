@@ -4,7 +4,7 @@ using SharedClasses.Models.BlogModels;
 
 namespace Server.Services.DataServices
 {
-    public class BlogEditPageDataService(ApplicationDbContext context)
+    public class ManageBlogsPageDataService(ApplicationDbContext context)
     {
         public async Task<List<Blog>> GetBlogsAsync()
         {
