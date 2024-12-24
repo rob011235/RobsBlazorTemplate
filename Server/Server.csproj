@@ -28,10 +28,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.10" />
-    <PackageReference Include="Syncfusion.Blazor.Core" Version="28.1.36" />
-    <PackageReference Include="Syncfusion.Blazor.Data" Version="28.1.36" />
-    <PackageReference Include="Syncfusion.Blazor.Grid" Version="28.1.36" />
-    <PackageReference Include="Syncfusion.Blazor.Themes" Version="28.1.36" />
   </ItemGroup>
 
 </Project>

@@ -3,16 +3,13 @@
 @rendermode InteractiveServer
 @using Server.Data
 @using SharedClasses.Models.BlogModels
-@inject BlogEditPageDataService ds
+@inject ManageBlogsPageDataService ds
 
 @attribute [Authorize(Roles ="Admin")]
 
 <h3>Manage Blogs</h3>
 <p>A list of blogs on this site. You can add, edit, update and delete blogs here.</p>
 
-@using Syncfusion.Blazor
-@using Syncfusion.Blazor.Data
-@using Syncfusion.Blazor.Grids
 
 @if (Blogs == null)
 {
@@ -21,17 +18,7 @@
 else
 {
     <span class="error">@ErrorDetails</span>
-    <SfGrid DataSource="@Blogs" AllowPaging="true" AllowFiltering="true" AllowSorting="true" Toolbar="@(new List<string>() { "Add", "Edit", "Delete", "Cancel", "Update" })">
-        <Syncfusion.Blazor.Data.SfDataManager Adaptor="Syncfusion.Blazor.Adaptors.CustomAdaptor" AdaptorInstance="@typeof(BlogGridCustomDataAdapter)"></Syncfusion.Blazor.Data.SfDataManager>
-        <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="@EditMode.Dialog"></GridEditSettings>
-        <GridEvents TValue="Blog" OnActionFailure="@ActionFailure"></GridEvents>
-        <GridPageSettings PageSize ="10"></GridPageSettings>
-        <GridColumns>
-            <GridColumn Field=@nameof(Blog.Id) HeaderText="Id" IsPrimaryKey="true" TextAlign="TextAlign.Left"></GridColumn>
-            <GridColumn Field=@nameof(Blog.Title) HeaderText="Title" TextAlign="TextAlign.Left"></GridColumn>
-            <GridColumn Field=@nameof(Blog.Description) HeaderText="Description" TextAlign="TextAlign.Left"></GridColumn>
-        </GridColumns>
-    </SfGrid>
+
 }
 
 <style>
@@ -47,139 +34,5 @@ else
     protected async override Task OnInitializedAsync()
     {
         Blogs = await ds.GetBlogsAsync();
-    }
-
-    public void ActionFailure(FailureEventArgs args)
-    {
-        this.ErrorDetails = $"Error {args.Error.Message}";
-        StateHasChanged();
-    }
-
-    // public async void ActionCompletedHandlerAsync(ActionEventArgs<Blog> args)
-    // {
-    //     // Here, you can customize your code.
-    //     switch(args.Action)
-    //     {
-    //         case "Add":
-    //             Blog? blog = await ds.AddAsync(args.Data);
-    //             if(blog != null)
-    //             {
-    //                 Blogs.Add(blog);
-    //             }
-    //             break;
-    //         case "Edit":
-    //             await ds.UpdateAsync(args.Data);
-    //             break;
-    //         case "Delete":
-    //             Blogs?.Remove(args.Data);
-    //             await ds.DeleteAsync(args.Data.Id);
-    //             break;
-    //     }
-    // }
-
-    public class BlogGridCustomDataAdapter : DataAdaptor
-    {
-        private BlogEditPageDataService _ds;
-
-        public BlogGridCustomDataAdapter(BlogEditPageDataService ds)
-        {
-            _ds = ds;
-        }
-
-        public override async Task<object> ReadAsync(DataManagerRequest dm, string key = null)
-        {
-            IEnumerable<Blog> DataSource = await _ds.GetBlogsAsync();
-
-            if (dm.Search != null && dm.Search.Count > 0)
-            {
-                // Searching
-                DataSource = DataOperations.PerformSearching(DataSource, dm.Search);
-            }
-            if (dm.Sorted != null && dm.Sorted.Count > 0)
-            {
-                // Sorting
-                DataSource = DataOperations.PerformSorting(DataSource, dm.Sorted);
-            }
-            if (dm.Where != null && dm.Where.Count > 0)
-            {
-                // Filtering
-                DataSource = DataOperations.PerformFiltering(DataSource, dm.Where, dm.Where[0].Operator);
-            }
-            int count = DataSource.Cast<Blog>().Count();
-            if (dm.Skip != 0)
-            {
-                //Paging
-                DataSource = DataOperations.PerformSkip(DataSource, dm.Skip);
-            }
-            if (dm.Take != 0)
-            {
-                DataSource = DataOperations.PerformTake(DataSource, dm.Take);
-            }
-            return dm.RequiresCounts ? new DataResult() { Result = DataSource, Count = count } : (object)DataSource;
-        }
-
-        // Performs Insert operation
-        public async override Task<object> InsertAsync(DataManager dm, object value, string key)
-        {
-            Blog blog = await _ds.AddAsync(value as Blog);
-            Blogs.Insert(0, blog);
-            return value;
-        }
-
-        // Performs Remove operation
-        public async override Task<object> RemoveAsync(DataManager dm, object value, string keyField, string key)
-        {
-            string? guidStr = value?.ToString();
-            if (guidStr != null)
-            {
-                Guid guid = Guid.Parse(guidStr);
-                await _ds.DeleteAsync(guid);
-                var blogToRemove = Blogs?.Where(or => or.Id == guid).FirstOrDefault();
-                if (blogToRemove != null)
-                {
-                    Blogs.Remove(blogToRemove);
-                }
-            }
-            return value;
-        }
-
-        // Performs Update operation
-        public async override Task<object> UpdateAsync(DataManager dm, object value, string keyfield, string key)
-        {
-            var blog = Blogs.Where(or => or.Id == (value as Blog).Id).FirstOrDefault();
-            await _ds.UpdateAsync(blog);
-            return value;
-        }
-
-        public async override Task<object> BatchUpdateAsync(DataManager dm, object Changed, object Added, object Deleted, string KeyField, string Key, int? dropIndex)
-        {
-            if (Changed != null)
-            {
-                foreach (var rec in (IEnumerable<Blog>)Changed)
-                {
-                    Blog blog = Blogs.Where(or => or.Id == rec.Id).FirstOrDefault();
-                    blog.Id = rec.Id;
-                    blog.Title = rec.Title;
-                    blog.Description = rec.Description;
-                }
-
-            }
-            if (Added != null)
-            {
-                foreach (var rec in (IEnumerable<Blog>)Added)
-                {
-                    Blogs.Add(rec);
-                }
-
-            }
-            if (Deleted != null)
-            {
-                foreach (var rec in (IEnumerable<Blog>)Deleted)
-                {
-                    Blogs.Remove(Blogs.Where(or => or.Id == rec.Id).FirstOrDefault());
-                }
-            }
-            return Blogs;
-        }
     }
 }
