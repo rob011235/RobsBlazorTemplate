@@ -1,18 +1,16 @@
-﻿using Server.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Server.Data;
+using SharedClasses.Interfaces;
 using SharedClasses.Models.BlogModels;
 
 namespace Server.Services.DataServices
 {
-    public class BlogPageDataService(ApplicationDbContext context)
+    public class BlogPageDataService(ApplicationDbContext context) : IBlogPageDataService
     {
-        public List<Blog> GetAllBlogs()
+        public async Task<Blog?> GetBlogFromRouteAsync(string route)
         {
-            return context.Blogs.ToList();
-        }
-
-        public Blog? GetBlog(Guid id)
-        {
-            return context.Blogs.FirstOrDefault() as Blog;
+            Blog blog = await context.Blogs.Where(b => b.Route.ToLower() == route.ToLower()).Include(b=>b.Posts).FirstOrDefaultAsync();
+            return blog;
         }
     }
 }

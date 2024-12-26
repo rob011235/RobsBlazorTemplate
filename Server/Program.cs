@@ -3,13 +3,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Server.Components;
 using Server.Components.Account;
-using Server.Components.Pages.BlogPages;
 using Server.Data;
 using Server.Services;
 using Server.Services.DataServices;
 using SharedClasses.Interfaces;
 using SharedClasses.Models;
-using static Server.Components.Pages.BlogPages.ManageBlogs;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +16,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
+
+#region Confgure Web Api
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    //Ignore cycles to avoid self referencing problems. See https://learn.microsoft.com/en-us/ef/core/querying/related-data/serialization
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
+#endregion
 
 #region Configure Authentication Authorization
 builder.Services.AddCascadingAuthenticationState();
@@ -40,6 +47,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddTransient<ManageBlogsPageDataService>();
 builder.Services.AddTransient<ManageBlogPageDataService>();
+builder.Services.AddTransient<IBlogPageDataService,BlogPageDataService>();
 #endregion
 
 #region Configure Identity
@@ -64,6 +72,7 @@ builder.Services.AddTransient<IEmailSender<ApplicationUser>, EmailSender>();
 #region Configure Component Libraries
 builder.Services.AddBlazorBootstrap();
 #endregion
+
 var app = builder.Build();
 
 #region Add HTTP request pipeline.
@@ -93,6 +102,7 @@ app.MapRazorComponents<App>()
 #region Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
 #endregion
+
 
 #region Add default admin user
 //User Secrets needs the admin user id and password 
@@ -129,6 +139,10 @@ using (var scope = app.Services.CreateScope())
         await userManager.AddToRoleAsync(user, "Admin");
     }
 }
+#endregion
+
+#region Add Api Endpoints
+app.MapControllers();
 #endregion
 
 app.Run();

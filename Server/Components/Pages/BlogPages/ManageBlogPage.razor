@@ -1,0 +1,104 @@
+﻿@page "/ManageBlog/{Route}"
+@rendermode InteractiveServer
+@using SharedClasses.Models.BlogModels
+@inject ManageBlogPageDataService DataService
+@inject NavigationManager Navigation
+
+@if (blog == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="mb-3">
+        <label for="title" class="form-label"Title">Title</label>
+        <InputText class="form-control" id="title" @bind-Value="blog.Title" @bind-Value:after="UpdateBlog" placeholder="Title for your blog." />
+    </div>
+    <div class="mb-3">
+        <label for="route" class="form-label" Title">Route</label>
+        <InputText class="form-control" id="route" @bind-Value="blog.Route" @bind-Value:after="UpdateBlog" placeholder="Route to navigate to your blog. Url will be https://{your domain}/{this route}. Please do not use any spaces. All spaces will be replaced with a -." />
+    </div>
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <InputTextArea class="form-control" id="description" @bind-Value="blog.Description" @bind-Value:after="UpdateBlog" placeholder="Please add a description of your blog." />
+    </div>
+
+    <a class="btn btn-outline-dark" href="addpost/@blog.Id">
+        <Icon Name="IconName.Plus"/>
+        Add Post
+    </a>
+    @if(blog.Posts == null || blog.Posts.Count == 0)
+    {
+        <p>No posts</p>
+    }
+    else
+    {
+        @foreach(var post in blog.Posts)
+        {
+            <p>
+                @post.Title <button class="btn btn-light" @onclick="() => EditPost(post)">
+                    <Icon Name="IconName.Pencil" />
+                </button>
+                <button class="btn btn-light" @onclick="() => DeletePostAsync(post)">
+                    <Icon Name="IconName.X" />
+                </button>
+            </p>
+        }
+    }
+}
+<a class="link-secondary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="ManageBlogs">Return to Manage Blogs</a>
+
+<ConfirmDialog @ref="dialog" />
+
+@code {
+        [Parameter]
+        public string? Route { get; set; }
+
+    private ConfirmDialog dialog = default!;
+
+    private Blog? blog;
+
+    protected async override Task OnParametersSetAsync()
+    {
+        if (Route != null)
+        {
+            blog = await DataService.GetBlogByRouteAsync(Route);
+        }
+    }
+
+    private void EditPost(Post post)
+    {
+        Navigation.NavigateTo($"/editpost/{post.Id}");
+    }
+
+    private async Task DeletePostAsync(Post post)
+    {
+        var confirmation = await dialog.ShowAsync(
+            title: "Are you sure you want to delete this?",
+            message1: "This will delete the record. Once deleted can not be rolled back.",
+            message2: "Do you want to proceed?");
+
+        if (confirmation)
+        {
+            await DataService.DeletePostAsync(post.Id);
+        }        
+    }
+
+    private async void UpdateBlog()
+    {
+        if(blog is not null)
+        {
+            await DataService.UpdateBlogAsync(blog);
+        }
+    }
+
+    private void OnSubmit(MouseEventArgs e)
+    {
+
+    }
+
+    private void OnCancel(MouseEventArgs e)
+    {
+
+    }
+}

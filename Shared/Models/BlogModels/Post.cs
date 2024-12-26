@@ -35,5 +35,10 @@ namespace SharedClasses.Models.BlogModels
         /// Blog this post belongs to
         /// </summary>
         public Blog? Blog { get; set; }
+
+        /// <summary>
+        /// Route to get to this post
+        /// </summary>
+        public string? Route {  get; set; }
     }
 }

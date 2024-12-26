@@ -1,0 +1,82 @@
+﻿@page "/addpost/{BlogId}"
+@page "/editpost/{PostId}"
+
+@rendermode InteractiveServer
+@using SharedClasses.Models.BlogModels
+@inject ManageBlogPageDataService DataService
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+<h3>Edit Post</h3>
+
+<EditForm Model="@post" OnValidSubmit="HandleValidSubmitAsync" FormName="post-form">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label class="form-label" for="title">Title:</label>
+        <InputText class="form-control" id="title" @bind-Value="post.Title" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="date">Date:</label>
+        <InputDate class="form-control" id="date" @bind-Value="post.Date" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="content">Content:</label>
+        <InputTextArea class="form-control" id="content" @bind-Value="post.Text" />
+    </div>
+    <button class="btn btn-outline-dark" type="submit">Save</button>
+    <button class="btn btn-outline-danger" @onclick="HandleCancelAsync" type="button">Cancel</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public string? BlogId { get; set; }
+    [Parameter]
+    public string? PostId { get; set; }
+
+    private Post? post = new Post();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        if (string.IsNullOrEmpty(PostId) && BlogId is not null)
+        {
+            post = new Post();
+            post.Date = DateOnly.FromDateTime(DateTime.Now);
+            post.BlogId = Guid.Parse(BlogId);
+        }
+        else if(PostId != null)
+        {
+            Guid guid = Guid.Parse(PostId);
+            post = await DataService.GetPostAsync(guid);
+        }
+        else
+        {
+            Navigation.NavigateTo("error");
+        }
+    }
+
+    private async Task HandleValidSubmitAsync()
+    {
+        if (post is not null)
+        {
+            if (post?.Id == null || post.Id == Guid.Empty)
+            {
+                await DataService.AddPostAsync(post);
+            }
+            else
+            {
+                await DataService.UpdatePostAsync(post);
+            }
+            await JSRuntime.InvokeVoidAsync("history.back");
+        }
+        else
+        {
+            Navigation.NavigateTo("Error");
+        }
+    }
+
+    private async Task HandleCancelAsync()
+    {
+        await JSRuntime.InvokeVoidAsync("history.back");
+    }
+}

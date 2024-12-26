@@ -1,9 +1,34 @@
-﻿@page "/blog/{name}"
+﻿@page "/blog/{route}"
 @rendermode InteractiveAuto
+@using SharedClasses.Interfaces
+@using SharedClasses.Models.BlogModels
+@inject IBlogPageDataService DataService
 
-<h3>@name Blog</h3>
+@if (blog == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <h3>@blog.Title</h3>
+    <p>@blog.Description</p>
 
+    @foreach(Post post in blog.Posts)
+    {
+        <p>@post.Title</p>
+    }
+}
 @code {
     [Parameter]
-    public string? name{ get; set; }
+    public string? route{ get; set; }
+
+    private Blog? blog;
+
+    protected async override Task OnParametersSetAsync()
+    {
+        if (route is not null)
+        {
+            blog = await DataService.GetBlogFromRouteAsync(route);
+        }
+    }
 }

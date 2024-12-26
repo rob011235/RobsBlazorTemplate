@@ -1,11 +1,11 @@
-﻿@page "/EditBlog"
+﻿@page "/AddBlog"
 
 @rendermode InteractiveServer
 @using Server.Data
 @using SharedClasses.Models.BlogModels
 @inject ManageBlogsPageDataService ds
 
-<h3>Edit Blog</h3>
+<h3>Add Blog</h3>
 @if (Blog == null)
 {
     <p><em>Loading...</em></p>
@@ -14,22 +14,22 @@ else
 {
     <div class="row">
         <div class="col-5 col-md-3 text-end">Title:</div>
-        <div class="col-7 col-md-9"><input type="text" @bind="Blog.Title" @bind:after="OnTitleChange" /></div>
+        <div class="col-7 col-md-9"><input type="text" class="form-control" @bind="Blog.Title" @bind:after="OnTitleChange" /></div>
     </div>
     <div class="row">
         <div class="col-5 col-md-3 text-end">Route:</div>
-        <div class="col-7 col-md-9"><input type="text" @bind="Blog.Route" /></div>
+        <div class="col-7 col-md-9"><input type="text" class="form-control" @bind="Blog.Route" /></div>
     </div>
     <div class="row">
         <div class="col-5 col-md-3 text-end">Description:</div>
-        <div class="col-7 col-md-9"><textarea @bind="Blog.Description"/></div>
+        <div class="col-7 col-md-9"><textarea class="form-control" @bind="Blog.Description" /></div>
     </div>
 }
-<Button class="mt-3" Color="ButtonColor.Success" Type="ButtonType.Button" @onclick="OnSubmit">
+<Button class="btn btn-outline-dark" Type="ButtonType.Button" @onclick="OnSubmit">
     Submit
 </Button>
 
-<Button class="mt-3" Color="ButtonColor.None" Type="ButtonType.Button" @onclick="OnCancel">
+<Button class="btn btn-outline-danger" Type="ButtonType.Button" @onclick="OnCancel">
     Cancel
 </Button>
 
