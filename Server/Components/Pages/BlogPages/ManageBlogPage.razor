@@ -4,12 +4,17 @@
 @inject ManageBlogPageDataService DataService
 @inject NavigationManager Navigation
 
+@attribute [Authorize(Roles = "Admin")]
+<div class="container">
 @if (blog == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
+    <div class="mb-3, text-center">
+        <a class="btn btn-outline-dark" style="width: 200px" href="/blog/@blog.Route">View Blog</a>
+    </div>
     <div class="mb-3">
         <label for="title" class="form-label"Title">Title</label>
         <InputText class="form-control" id="title" @bind-Value="blog.Title" @bind-Value:after="UpdateBlog" placeholder="Title for your blog." />
@@ -49,7 +54,7 @@ else
 <a class="link-secondary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="ManageBlogs">Return to Manage Blogs</a>
 
 <ConfirmDialog @ref="dialog" />
-
+</div>
 @code {
         [Parameter]
         public string? Route { get; set; }

@@ -9,7 +9,7 @@ namespace Server.Services.DataServices
     {
         public async Task<Blog?> GetBlogFromRouteAsync(string route)
         {
-            Blog blog = await context.Blogs.Where(b => b.Route.ToLower() == route.ToLower()).Include(b=>b.Posts).FirstOrDefaultAsync();
+            Blog? blog = await context.Blogs.Where(b => b.Route != null && b.Route.ToLower() == route.ToLower()).Include(b=>b.Posts!).FirstOrDefaultAsync();
             return blog;
         }
     }

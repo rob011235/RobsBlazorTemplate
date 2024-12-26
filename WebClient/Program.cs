@@ -10,11 +10,7 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticationStateProvider>();
 
-builder.Services.AddScoped(sp =>
-new HttpClient
-{
-    BaseAddress = new Uri(builder.Configuration["Frontendurl"] ?? "https://localhost:5002")
-});
+
 
 #region Add Data Access Layers
 builder.Services.AddTransient<IBlogPageDataService,ClientBlogPageDataService>();

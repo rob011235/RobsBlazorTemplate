@@ -1,5 +1,8 @@
 ﻿@page "/blog/{route}"
 @rendermode InteractiveAuto
+@inject PersistentComponentState ApplicationState
+@implements IDisposable
+
 @using SharedClasses.Interfaces
 @using SharedClasses.Models.BlogModels
 @inject IBlogPageDataService DataService
@@ -10,6 +13,11 @@
 }
 else
 {
+    <AuthorizeView Roles="Admin">
+        <div class="mb-3, text-center">
+            <a class="btn btn-outline-dark" href="/ManageBlog/@blog.Route">Edit Blog</a>
+        </div>        
+    </AuthorizeView>    
     <h3>@blog.Title</h3>
     <p>@blog.Description</p>
 
@@ -21,14 +29,37 @@ else
 @code {
     [Parameter]
     public string? route{ get; set; }
-
+    private PersistingComponentStateSubscription persistingSubscription;
     private Blog? blog;
 
     protected async override Task OnParametersSetAsync()
     {
-        if (route is not null)
+        persistingSubscription =
+            ApplicationState.RegisterOnPersisting(PersistData);
+
+        if (!ApplicationState.TryTakeFromJson <Blog?> (
+            "Blog", out Blog? restored))
         {
-            blog = await DataService.GetBlogFromRouteAsync(route);
+            if (route is not null)
+            {
+                blog = await DataService.GetBlogFromRouteAsync(route);
+            }
         }
+        else
+        {
+            blog = restored!;
+        }
+    }
+
+    private Task PersistData()
+    {
+        ApplicationState.PersistAsJson("Blog", blog);
+
+        return Task.CompletedTask;
+    }
+
+    void IDisposable.Dispose()
+    {
+        persistingSubscription.Dispose();
     }
 }
