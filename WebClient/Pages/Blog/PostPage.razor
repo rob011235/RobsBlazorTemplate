@@ -7,8 +7,28 @@
 @inject IPostPageDAL DAL
 @implements IDisposable
 
+@if(post is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <AuthorizeView Roles="Admin">
+        <div class="mb-3, text-center">
+            <a class="btn btn-outline-dark" href="/EditPost/@post.Id">Edit Post</a>
+        </div>
+    </AuthorizeView>
+    <h1>@post.Title</h1>
+    @if (post.Text is not null)
+    {
+    <div>
+        @((MarkupString)post.Text)
+    </div>
+    }
 
-<h3>Post Page</h3>
+    <a class="btn btn-outline-dark" href="/blog/@post.Blog.Route">Back to Blog</a>
+}
+
 
 @code {
     [Parameter]

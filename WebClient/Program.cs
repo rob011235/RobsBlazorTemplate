@@ -6,13 +6,19 @@ using WebClient.Services.DataServices;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
+builder.Services.AddScoped(sp =>
+    new HttpClient
+    {
+        BaseAddress = new Uri(builder.Configuration["FrontendUrl"] ?? "https://localhost:7113")
+    });
+
 builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticationStateProvider>();
 
-
 #region Add Data Access Layers
 builder.Services.AddTransient<IBlogPageDataService,ClientBlogPageDataService>();
+builder.Services.AddTransient<IPostPageDAL, ClientPostPageDAL>();
 #endregion
 
 #region Register Component Libraries

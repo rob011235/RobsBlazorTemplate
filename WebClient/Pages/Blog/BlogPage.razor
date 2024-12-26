@@ -23,7 +23,7 @@ else
 
     @foreach(Post post in blog.Posts)
     {
-        <p>@post.Title</p>
+        <p><a href="post/@post.Route">@post.Title</a> - @post.Date </p>   
     }
 }
 @code {
