@@ -4,7 +4,7 @@ using Server.Data;
 using SharedClasses.Models;
 using SharedClasses.Models.BlogModels;
 
-namespace Server.Services.DataServices
+namespace Server.Services.DALs
 {
     public class NavigationDAL(ApplicationDbContext context)
     {

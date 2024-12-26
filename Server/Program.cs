@@ -5,7 +5,7 @@ using Server.Components;
 using Server.Components.Account;
 using Server.Data;
 using Server.Services;
-using Server.Services.DataServices;
+using Server.Services.DALs;
 using SharedClasses.Interfaces;
 using SharedClasses.Models;
 using System.Text.Json.Serialization;

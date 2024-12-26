@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Server.Services.DataServices;
+using Server.Services.DALs;
 using SharedClasses.Interfaces;
 using SharedClasses.Models.BlogModels;
 

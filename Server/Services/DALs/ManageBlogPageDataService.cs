@@ -2,7 +2,7 @@
 using Server.Data;
 using SharedClasses.Models.BlogModels;
 
-namespace Server.Services.DataServices
+namespace Server.Services.DALs
 {
     public class ManageBlogPageDataService(ApplicationDbContext context)
     {

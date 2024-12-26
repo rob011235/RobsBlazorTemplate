@@ -3,7 +3,7 @@ using Server.Data;
 using SharedClasses.Interfaces;
 using SharedClasses.Models.BlogModels;
 
-namespace Server.Services.DataServices
+namespace Server.Services.DALs
 {
     public class PostPageDAL(ApplicationDbContext context) : IPostPageDAL
     {
