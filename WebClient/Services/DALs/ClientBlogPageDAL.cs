@@ -2,9 +2,9 @@
 using SharedClasses.Models.BlogModels;
 using System.Net.Http.Json;
 
-namespace WebClient.Services.DataServices
+namespace WebClient.Services.DALs
 {
-    public class ClientBlogPageDataService(HttpClient http) : IBlogPageDataService
+    public class ClientBlogPageDAL(HttpClient http) : IBlogPageDAL
 
     {
         public async Task<Blog?> GetBlogFromRouteAsync(string route)

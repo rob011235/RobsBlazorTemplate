@@ -3,7 +3,7 @@
 
 @rendermode InteractiveServer
 @using SharedClasses.Models.BlogModels
-@inject ManageBlogPageDataService DataService
+@inject ManageBlogPageDAL DAL
 @inject NavigationManager Navigation
 @inject IJSRuntime JSRuntime
 <h3>Edit Post</h3>
@@ -53,7 +53,7 @@
         else if(PostId != null)
         {
             Guid guid = Guid.Parse(PostId);
-            post = await DataService.GetPostAsync(guid);
+            post = await DAL.GetPostAsync(guid);
         }
         else
         {
@@ -75,11 +75,11 @@
         {
             if (post?.Id == null || post.Id == Guid.Empty)
             {
-                await DataService.AddPostAsync(post);
+                await DAL.AddPostAsync(post);
             }
             else
             {
-                await DataService.UpdatePostAsync(post);
+                await DAL.UpdatePostAsync(post);
             }
             await JSRuntime.InvokeVoidAsync("history.back");
         }

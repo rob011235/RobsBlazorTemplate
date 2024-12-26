@@ -2,7 +2,7 @@
 
 namespace SharedClasses.Interfaces
 {
-    public interface IBlogPageDataService
+    public interface IBlogPageDAL
     {
         Task<Blog?> GetBlogFromRouteAsync(string route);
     }

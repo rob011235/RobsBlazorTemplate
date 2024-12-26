@@ -1,7 +1,7 @@
 ﻿@page "/ManageBlog/{Route}"
 @rendermode InteractiveServer
 @using SharedClasses.Models.BlogModels
-@inject ManageBlogPageDataService DataService
+@inject ManageBlogPageDAL DAL
 @inject NavigationManager Navigation
 
 @attribute [Authorize(Roles = "Admin")]
@@ -71,7 +71,7 @@ else
     {
         if (Route != null)
         {
-            blog = await DataService.GetBlogByRouteAsync(Route);
+            blog = await DAL.GetBlogByRouteAsync(Route);
         }
     }
 
@@ -89,7 +89,7 @@ else
 
         if (confirmation)
         {
-            await DataService.DeletePostAsync(post.Id);
+            await DAL.DeletePostAsync(post.Id);
         }        
     }
 
@@ -98,7 +98,7 @@ else
         if(blog is not null)
         {
             blog.Route = blog?.Title.Replace(' ','-');
-            await DataService.UpdateBlogAsync(blog);
+            await DAL.UpdateBlogAsync(blog);
         }
     }
 
@@ -106,7 +106,7 @@ else
     {
         if (blog is not null)
         {
-            await DataService.UpdateBlogAsync(blog);
+            await DAL.UpdateBlogAsync(blog);
         }
     }
 

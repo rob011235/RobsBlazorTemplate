@@ -47,9 +47,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddTransient<ManageBlogsPageDataService>();
-builder.Services.AddTransient<ManageBlogPageDataService>();
-builder.Services.AddTransient<IBlogPageDataService,BlogPageDataService>();
+builder.Services.AddTransient<ManageBlogsPageDAL>();
+builder.Services.AddTransient<ManageBlogPageDAL>();
+builder.Services.AddTransient<IBlogPageDAL,BlogPageDAL>();
 builder.Services.AddTransient<IPostPageDAL,PostPageDAL>();
 builder.Services.AddTransient<NavigationDAL>();
 #endregion

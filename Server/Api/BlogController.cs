@@ -9,13 +9,13 @@ namespace Server.Api
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BlogController(IBlogPageDataService dataService) : ControllerBase
+    public class BlogController(IBlogPageDAL dal) : ControllerBase
     {
         // GET api/Blog/my-blog
         [HttpGet("{route}")]
         public async Task<Blog?> GetBlogFromRouteAsync(string route)
         {
-            return await dataService.GetBlogFromRouteAsync(route);
+            return await dal.GetBlogFromRouteAsync(route);
         }
     }
 }

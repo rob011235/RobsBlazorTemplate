@@ -2,7 +2,7 @@
 using SharedClasses.Models.BlogModels;
 using System.Net.Http.Json;
 
-namespace WebClient.Services.DataServices
+namespace WebClient.Services.DALs
 {
     public class ClientPostPageDAL(HttpClient http) : IPostPageDAL
     {

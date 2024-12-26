@@ -5,7 +5,7 @@ using SharedClasses.Models.BlogModels;
 
 namespace Server.Services.DALs
 {
-    public class BlogPageDataService(ApplicationDbContext context) : IBlogPageDataService
+    public class BlogPageDAL(ApplicationDbContext context) : IBlogPageDAL
     {
         public async Task<Blog?> GetBlogFromRouteAsync(string route)
         {

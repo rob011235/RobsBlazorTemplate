@@ -5,7 +5,7 @@
 
 @using SharedClasses.Interfaces
 @using SharedClasses.Models.BlogModels
-@inject IBlogPageDataService DataService
+@inject IBlogPageDAL DAL
 
 @if (blog == null)
 {
@@ -42,7 +42,7 @@ else
         {
             if (Route is not null)
             {
-                blog = await DataService.GetBlogFromRouteAsync(Route);
+                blog = await DAL.GetBlogFromRouteAsync(Route);
             }
         }
         else

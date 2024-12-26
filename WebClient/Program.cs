@@ -2,7 +2,7 @@ using WebClient;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using SharedClasses.Interfaces;
-using WebClient.Services.DataServices;
+using WebClient.Services.DALs;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -17,7 +17,7 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticationStateProvider>();
 
 #region Add Data Access Layers
-builder.Services.AddTransient<IBlogPageDataService,ClientBlogPageDataService>();
+builder.Services.AddTransient<IBlogPageDAL,ClientBlogPageDAL>();
 builder.Services.AddTransient<IPostPageDAL, ClientPostPageDAL>();
 #endregion
 
