@@ -24,6 +24,10 @@ else
         <InputText class="form-control" id="route" @bind-Value="blog.Route" @bind-Value:after="UpdateBlog" placeholder="Route to navigate to your blog. Url will be https://{your domain}/{this route}. Please do not use any spaces. All spaces will be replaced with a -." />
     </div>
     <div class="mb-3">
+        <label for="route" class="form-label" Title">Show Blog</label>
+        <InputCheckbox class="form-control" id="show" @bind-Value="blog.DisplayBlog" @bind-Value:after="UpdateBlog" placeholder="Display blog?" />
+    </div>
+    <div class="mb-3">
         <label for="description" class="form-label">Description</label>
         <InputTextArea class="form-control" id="description" @bind-Value="blog.Description" @bind-Value:after="UpdateBlog" placeholder="Please add a description of your blog." />
     </div>

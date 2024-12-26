@@ -17,6 +17,8 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
+builder.Services.AddHttpClient();
+
 #region Confgure Web Api
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -48,6 +50,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddTransient<ManageBlogsPageDataService>();
 builder.Services.AddTransient<ManageBlogPageDataService>();
 builder.Services.AddTransient<IBlogPageDataService,BlogPageDataService>();
+builder.Services.AddTransient<NavigationDAL>();
 #endregion
 
 #region Configure Identity

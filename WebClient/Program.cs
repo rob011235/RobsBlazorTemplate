@@ -11,7 +11,6 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticationStateProvider>();
 
 
-
 #region Add Data Access Layers
 builder.Services.AddTransient<IBlogPageDataService,ClientBlogPageDataService>();
 #endregion

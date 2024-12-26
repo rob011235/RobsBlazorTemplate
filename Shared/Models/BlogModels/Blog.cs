@@ -30,5 +30,10 @@ namespace SharedClasses.Models.BlogModels
         /// Posts associated with this blog
         /// </summary>
         public List<Post>? Posts { get; set; }
+
+        /// <summary>
+        /// Should blog be displayed
+        /// </summary>
+        public bool DisplayBlog { get; set; } = false;
     }
 }
