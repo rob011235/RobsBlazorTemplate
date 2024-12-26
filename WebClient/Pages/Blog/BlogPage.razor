@@ -1,4 +1,4 @@
-﻿@page "/blog/{route}"
+﻿@page "/blog/{Route}"
 @rendermode InteractiveAuto
 @inject PersistentComponentState ApplicationState
 @implements IDisposable
@@ -28,7 +28,7 @@ else
 }
 @code {
     [Parameter]
-    public string? route{ get; set; }
+    public string? Route{ get; set; }
     private PersistingComponentStateSubscription persistingSubscription;
     private Blog? blog;
 
@@ -40,9 +40,9 @@ else
         if (!ApplicationState.TryTakeFromJson <Blog?> (
             "Blog", out Blog? restored))
         {
-            if (route is not null)
+            if (Route is not null)
             {
-                blog = await DataService.GetBlogFromRouteAsync(route);
+                blog = await DataService.GetBlogFromRouteAsync(Route);
             }
         }
         else

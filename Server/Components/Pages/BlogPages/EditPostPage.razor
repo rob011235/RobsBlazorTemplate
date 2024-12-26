@@ -14,8 +14,14 @@
 
     <div class="mb-3">
         <label class="form-label" for="title">Title:</label>
-        <InputText class="form-control" id="title" @bind-Value="post.Title" />
+        <InputText class="form-control" id="title" @bind-Value="post.Title" @bind-Value:after="OnTitleChanged" />
     </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="route">Route:</label>
+        <InputText class="form-control" id="route" @bind-Value="post.Route" />
+    </div>
+
     <div class="mb-3">
         <label class="form-label" for="date">Date:</label>
         <InputDate class="form-control" id="date" @bind-Value="post.Date" />
@@ -52,6 +58,14 @@
         else
         {
             Navigation.NavigateTo("error");
+        }
+    }
+
+    private void OnTitleChanged()
+    {
+        if (post is not null)
+        {
+            post.Route = post?.Title?.Replace(' ', '-');
         }
     }
 

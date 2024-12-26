@@ -33,7 +33,7 @@ else
             @foreach (var blog in Blogs)
             {
                 <tr>
-                    <td><a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="ManageBlog/@blog.Route">@blog.Title</a></td>
+                    <td><a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="blog/@blog.Route">@blog.Title</a></td>
                     <td>
                         <a class="btn btn-light" href="ManageBlog/@blog.Route"><Icon Name="IconName.Pencil" /></a>
                         <button class="btn btn-light" @onclick="() => OnDeleteAsync(blog)">

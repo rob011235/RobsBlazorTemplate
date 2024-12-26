@@ -50,6 +50,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddTransient<ManageBlogsPageDataService>();
 builder.Services.AddTransient<ManageBlogPageDataService>();
 builder.Services.AddTransient<IBlogPageDataService,BlogPageDataService>();
+builder.Services.AddTransient<IPostPageDAL,PostPageDAL>();
 builder.Services.AddTransient<NavigationDAL>();
 #endregion
 

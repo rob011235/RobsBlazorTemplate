@@ -17,7 +17,7 @@ else
     </div>
     <div class="mb-3">
         <label for="title" class="form-label"Title">Title</label>
-        <InputText class="form-control" id="title" @bind-Value="blog.Title" @bind-Value:after="UpdateBlog" placeholder="Title for your blog." />
+        <InputText class="form-control" id="title" @bind-Value="blog.Title" @bind-Value:after="UpdateTitle" placeholder="Title for your blog." />
     </div>
     <div class="mb-3">
         <label for="route" class="form-label" Title">Route</label>
@@ -93,9 +93,18 @@ else
         }        
     }
 
-    private async void UpdateBlog()
+    private async void UpdateTitle()
     {
         if(blog is not null)
+        {
+            blog.Route = blog?.Title.Replace(' ','-');
+            await DataService.UpdateBlogAsync(blog);
+        }
+    }
+
+    private async void UpdateBlog()
+    {
+        if (blog is not null)
         {
             await DataService.UpdateBlogAsync(blog);
         }

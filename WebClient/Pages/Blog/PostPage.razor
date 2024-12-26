@@ -1,0 +1,49 @@
+﻿@page "/post/{route}"
+@using SharedClasses.Interfaces
+@using SharedClasses.Models.BlogModels
+
+@rendermode InteractiveAuto
+@inject PersistentComponentState ApplicationState
+@inject IPostPageDAL DAL
+@implements IDisposable
+
+
+<h3>Post Page</h3>
+
+@code {
+    [Parameter]
+    public string? Route{ get; set; }
+    private PersistingComponentStateSubscription persistingSubscription;
+    private Post? post;
+
+    protected async override Task OnParametersSetAsync()
+    {
+        persistingSubscription =
+            ApplicationState.RegisterOnPersisting(PersistData);
+
+        if (!ApplicationState.TryTakeFromJson<Post?>(
+            "Post", out Post? restored))
+        {
+            if (Route is not null)
+            {
+                post = await DAL.GetPostFromRouteAsync(Route);
+            }
+        }
+        else
+        {
+            post = restored!;
+        }
+    }
+
+    private Task PersistData()
+    {
+    ApplicationState.PersistAsJson("Post", post);
+
+    return Task.CompletedTask;
+    }
+
+    void IDisposable.Dispose()
+    {
+    persistingSubscription.Dispose();
+    }
+}
