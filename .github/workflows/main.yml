@@ -39,6 +39,6 @@ jobs:
       #  run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish Server\Server.csproj -c Release -f net8.0 /p:PublishProfile="Server\Properties\PublishProfiles\TestDeploy.emmw.net - Web Deploy.pubxml"
+        run: dotnet publish Server\Server.csproj -c Release /p:password=kDsBqaZX3G3ueab -f net8.0 /p:PublishProfile="Server\Properties\PublishProfiles\TestDeploy.emmw.net - Web Deploy.pubxml"
  
           
