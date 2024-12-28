@@ -15,10 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Data\app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\SharedComponents\SharedComponents.csproj" />
     <ProjectReference Include="..\Shared\SharedClasses.csproj" />
     <ProjectReference Include="..\WebClient\WebClient.csproj" />

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Server.Components;
 using Server.Components.Account;
 using Server.Data;
@@ -18,6 +19,25 @@ builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
 builder.Services.AddHttpClient();
+
+#region Configuration Database 
+//Verify database folder exists 
+//var appDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data");
+//if (!Directory.Exists(appDir))
+//{
+//    Directory.CreateDirectory(appDir);
+//}
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlite(connectionString));
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+builder.Services.AddTransient<ManageBlogsPageDAL>();
+builder.Services.AddTransient<ManageBlogPageDAL>();
+builder.Services.AddTransient<IBlogPageDAL, BlogPageDAL>();
+builder.Services.AddTransient<IPostPageDAL, PostPageDAL>();
+builder.Services.AddTransient<NavigationDAL>();
+#endregion
 
 #region Confgure Web Api
 builder.Services.AddControllers().AddJsonOptions(options =>
@@ -39,19 +59,6 @@ builder.Services.AddAuthentication(options =>
         options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
     })
     .AddIdentityCookies();
-#endregion
-
-#region Configuration Database 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(connectionString));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-builder.Services.AddTransient<ManageBlogsPageDAL>();
-builder.Services.AddTransient<ManageBlogPageDAL>();
-builder.Services.AddTransient<IBlogPageDAL,BlogPageDAL>();
-builder.Services.AddTransient<IPostPageDAL,PostPageDAL>();
-builder.Services.AddTransient<NavigationDAL>();
 #endregion
 
 #region Configure Identity
@@ -78,6 +85,14 @@ builder.Services.AddBlazorBootstrap();
 #endregion
 
 var app = builder.Build();
+
+#region Execute Migratons
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
+}
+#endregion
 
 #region Add HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -139,6 +154,7 @@ using (var scope = app.Services.CreateScope())
         var user = new ApplicationUser();
         user.Email = email;
         user.UserName = email;
+        user.EmailConfirmed = true;
         var results = await userManager.CreateAsync(user, password);
         await userManager.AddToRoleAsync(user, "Admin");
     }
