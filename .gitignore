@@ -266,3 +266,5 @@ __pycache__/
 *.db
 /Server/Data/app.db-shm
 /Server/Data/app.db-wal
+/Server/app.db-shm
+/Server/app.db-wal
